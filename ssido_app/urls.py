@@ -22,6 +22,5 @@ urlpatterns = [
     path('check_id/', views.check_id),
     path('b/', views.index2),
     path('ssido/', views.first),
-
     path('register_member_db/' , views.register_member_db),
 ]

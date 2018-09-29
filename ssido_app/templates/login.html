@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+	var id_validation = 'false';
+	var psw_validation = 'false';
+
+	function check_psw(){
+	 	var psw = $("input[name = 'user_psw']").val();
+		var re_psw = $("input[name = 'user_psw_re']").val();
+
+		if(psw == re_psw){
+			$("#psw_check_result").html("PASS");
+			$("#psw_check_result").css({
+				'color' : 'green',
+			});
+			id_validation = 'true';
+		}else{
+			$("#psw_check_result").html("False");
+			$("#psw_check_result").css({
+				'color' : 'red',
+			});
+			id_validation = 'false';
+		}
+	}
+	
+
+	 function check_id(){
+		var user_id = $("#user_id").val();
+
+		$.ajax({
+			url : '/check_id/',
+			data : {
+				'user_id' : user_id
+			},
+			dataType = 'json',
+
+			success : function(response_result){
+				
+				if(response_result.result == 'true'){
+					$("#id_check_result").html("중복");
+					$("#id_check_result").css({
+						'color' : 'red',
+					});
+					id_validation = 'false';
+				}else if(response_result.result == 'false'){
+					$("#id_check_result").html("사용가능");
+					$("#id_check_result").css({
+						'color' : 'green',
+					});
+					id_validation = 'true';
+				}
+
+			}
+
+		});
+	}
+
+	function check_submit(){
+		if(id_validation == 'true' && psw_validation == 'true'){
+			var form = document.frm;
+			form.submit();
+		}
+		else if(id_validation == 'false' && psw_validation == 'true'){
+			alert("아이디를 확인해 주세요");
+		}else if(id_validation == 'true' && psw_validation == 'false'){
+			alert("비밀번호를 확인해 주세요");
+		}else{
+			alert("아이디, 비밀번호를 확인해 주세요");
+		}
+	}
+
+</script>
+
+
+</head>
+<body>
+	<div class="container">
+
+		<br/><br/><br/>
+		<div class="page-header">
+          <h1>로그인</h1>
+        </div><br/>
+        <div class="line"></div><br/>
+
+	<div class="exec">
+		<form id="signupForm" name = "frm" method="post" action="./register_member_db/" class = "form-inline">
+
+			{% csrf_token %}
+		 
+			 <div style="width: 900px; margin: 0 auto;">
+				 <table class="table table-bordered">
+				 	<tr>
+				 		<th><label for="user_id">ID</label></th>
+				 		<td>
+				 			<input id="user_id" name="user_id" type="text" class="form-control" />
+				 			<input class="btn btn-danger" value="아이디 중복검사" type="button" onclick="check_id();" />
+				 		</td>
+				 		<td><div id = "id_check_result"></div></td>
+				 		
+				 	</tr>
+				 	<tr>
+				 		<th><label for="user_psw">Password</label> </th>
+				 		<td colspan="2"><input id="user_psw" name="user_psw" type="password" class="form-control"/></td>
+				 	</tr>
+				 	<tr>
+				 		<th><label for="user_psw_re">Password Check</label> </th>
+				 		<td colspan="2">
+				 			<input type = "password" id="user_psw_re" name="user_psw_re" class="form-control" />
+				 			<input type="button" value="비번 일치 검사" class="btn btn-danger" onchange="check_psw();" />
+				 		</td>
+				 		<td><div id = "psw_check_result"></div></td>
+				 	</tr>
+
+					<tr>
+				 	<td colspan="2"><button class="btn btn-info" type="button" onclick="check_submit();">제출</button></td>
+					</tr>
+
+				 </table>
+				</div>
+
+			</form>
+	
+		
+		</div>
+
+	</div>
+
+</body>
+</html>
